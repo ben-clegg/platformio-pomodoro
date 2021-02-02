@@ -1,7 +1,6 @@
 #pragma once
 
 
-
 #define BUTTON_USE  35
 #define BUTTON_MODE 0
 
@@ -21,7 +20,8 @@
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
 #include <SPI.h>
 
-class Pomodoro {
+class Pomodoro 
+{
     
     public: 
         Pomodoro(TFT_eSPI &tft);
