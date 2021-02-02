@@ -20,13 +20,13 @@
 #include <Arduino.h>
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
 #include <SPI.h>
-#include <Button2.h>
 
 class Pomodoro {
     
     public: 
         Pomodoro(TFT_eSPI &tft);
         ~Pomodoro() = default;
+        void timerTick();
         void loop();
     
     private: 
@@ -43,7 +43,6 @@ class Pomodoro {
             GAME_OF_LIFE
         };
 
-        hw_timer_t * timer;
 
         TFT_eSPI &tft;
 
@@ -55,18 +54,14 @@ class Pomodoro {
         String timeText;
         uint8_t completedPomos;
 
-        Button2 buttonUse;
-        Button2 buttonMode;
-
         
-        void IRAM_ATTR onTimer();
         void resetTimer(timerStatus newStatus);
         void updateColour();
         void taskInputHandler();
         void taskDisplayHandler();
-        void useClicked(Button2& btn);
-        void useLongClicked(Button2& btn);
-        void modeClicked(Button2& btn);
+        void useClicked();
+        void useLongClicked();
+        void modeClicked();
         String timerToString(uint16_t currentTimer);
         String intToPaddedString(uint8_t integer);
         void timerScreen();

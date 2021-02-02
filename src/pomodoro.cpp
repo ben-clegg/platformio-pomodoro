@@ -2,49 +2,35 @@
 
 Pomodoro::Pomodoro(TFT_eSPI &tft) : tft(tft) 
 {
-    paused = false;
-    currentStatus = STOPPED;
-    currentScreen = TIMER;
-    timeCounter = 0;
-    timeText = "--:--";
-    completedPomos = 0;
+  delay(500);
+  Serial.println("pomo created");
+  
+  paused = false;
+  currentStatus = STOPPED;
+  currentScreen = TIMER;
+  timeCounter = 0;
+  timeText = "--:--";
+  completedPomos = 0;
 
-    buttonUse = Button2(BUTTON_USE);
-    buttonMode = Button2(BUTTON_MODE);
+  delay(50);
+  Serial.begin(9600);
+  Serial.println("start");
+  // Display
+  tft.init();
+  tft.setRotation(1);
 
+  // Buttons 
+  //buttonUse.setClickHandler((*Button2::CallbackFunction)(){&Pomodoro::useClicked});
+  //buttonUse.setLongClickHandler(useLongClicked);
+  //buttonMode.setClickHandler(modeClicked);
 
-    delay(50);
-    Serial.begin(9600);
-    Serial.println("start");
-    // Display
-    tft.init();
-    tft.setRotation(1);
-
-    // Buttons 
-    buttonUse.setClickHandler((*Button2::CallbackFunction)(){&Pomodoro::useClicked});
-    //buttonUse.setLongClickHandler(useLongClicked);
-    //buttonMode.setClickHandler(modeClicked);
-
-    // Init timer
-    timer = timerBegin(0, 80, true);
-
-    // Attach onTimer function to our timer.
-    //timerAttachInterrupt(timer, &onTimer, true);
-
-    // Set alarm to call onTimer function every second (value in microseconds).
-    // Repeat the alarm (third parameter)
-    timerAlarmWrite(timer, 1000000, true);
-
-    // Start an alarm
-    timerAlarmEnable(timer);
-
-    // Setup timer
-    resetTimer(Pomodoro::timerStatus::POMO_RUNNING);
-    paused = true;
-    updateColour();
+  // Setup timer
+  resetTimer(Pomodoro::timerStatus::POMO_RUNNING);
+  paused = false;
+  updateColour();
 }
 
-void IRAM_ATTR Pomodoro::onTimer() {
+void Pomodoro::timerTick() {
   // Decrement timer
   if((currentStatus != STOPPED) && (!paused)) {
     timeCounter--;
@@ -72,7 +58,7 @@ void IRAM_ATTR Pomodoro::onTimer() {
 
 void Pomodoro::loop() 
 {
-
+  taskDisplayHandler();
 }
 
 void Pomodoro::resetTimer(timerStatus newStatus) {
@@ -101,15 +87,14 @@ void Pomodoro::updateColour() {
 }
 
 void Pomodoro::taskInputHandler() {
-  buttonUse.loop();
-  buttonMode.loop();
+
 }
 
 void Pomodoro::taskDisplayHandler() {
   timerScreen();
 }
 
-void Pomodoro::useClicked(Button2& btn) {
+void Pomodoro::useClicked() {
     Serial.println("A clicked");
     switch(currentScreen) {
     case TIMER:
@@ -126,7 +111,7 @@ void Pomodoro::useClicked(Button2& btn) {
   }
 }
 
-void Pomodoro::useLongClicked(Button2& btn) {
+void Pomodoro::useLongClicked() {
     Serial.println("A longclicked");
 
     switch(currentScreen) {
@@ -137,7 +122,7 @@ void Pomodoro::useLongClicked(Button2& btn) {
     }
 }
 
-void Pomodoro::modeClicked(Button2& btn) {
+void Pomodoro::modeClicked() {
     Serial.println("B clicked");
 }
 
