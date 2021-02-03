@@ -21,6 +21,7 @@ Pomodoro::Pomodoro(TFT_eSPI &tft) : tft(tft)
     buttonUse.setEvent(Button::event::SHORT_PRESS, std::bind(&Pomodoro::useClicked, this));
     buttonUse.setEvent(Button::event::LONG_PRESS, std::bind(&Pomodoro::useLongClicked, this));
     buttonMode.setEvent(Button::event::SHORT_PRESS, std::bind(&Pomodoro::modeClicked, this));
+    buttonMode.setEvent(Button::event::LONG_PRESS, std::bind(&Pomodoro::modeLongClicked, this));
 
     // Setup timer
     resetTimer(IN_POMODORO);
@@ -144,7 +145,17 @@ void Pomodoro::useLongClicked()
 
 void Pomodoro::modeClicked()
 {
-    Serial.println("Mode clicked");
+    // Switch to next screen
+    int nextScreenNumber = currentScreen + 1;
+    if (nextScreenNumber >= enumEnd)
+        nextScreenNumber = 0;
+    currentScreen = (screen) nextScreenNumber;
+}
+
+void Pomodoro::modeLongClicked()
+{
+    // Switch screen back to timer
+    currentScreen = TIMER;
 }
 
 String Pomodoro::timerToString(uint16_t currentTimer)

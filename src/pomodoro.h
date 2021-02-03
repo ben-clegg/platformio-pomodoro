@@ -39,7 +39,8 @@ private:
     enum screen
     {
         TIMER,
-        GAME_OF_LIFE
+        GAME_OF_LIFE,
+        enumEnd
     };
 
     TFT_eSPI &tft;
@@ -58,6 +59,7 @@ private:
     void useClicked();
     void useLongClicked();
     void modeClicked();
+    void modeLongClicked();
     String timerToString(uint16_t currentTimer);
     String intToPaddedString(uint8_t integer);
     void timerScreen();
