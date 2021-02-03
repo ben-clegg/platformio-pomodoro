@@ -56,12 +56,6 @@ void Pomodoro::timerTick()
     }
 }
 
-void Pomodoro::loop()
-{
-    taskDisplayHandler();
-    taskInputHandler();
-}
-
 void Pomodoro::resetTimer(timerStatus newStatus)
 {
     switch (newStatus)
@@ -76,11 +70,18 @@ void Pomodoro::resetTimer(timerStatus newStatus)
     timeText = timerToString(timeCounter);
     currentStatus = newStatus;
     paused = true;
-    updateColour();
+    //updateColour();
 }
 
 void Pomodoro::updateColour()
 {
+    // Skip if no state change
+    if (paused == pausedLastTick)
+    {
+        return;
+    }
+
+    // State changed
     if (paused)
     {
         tft.fillScreen(COLOUR_PRIMARY);
@@ -91,17 +92,27 @@ void Pomodoro::updateColour()
         tft.fillScreen(COLOUR_SECONDARY);
         tft.setTextColor(COLOUR_PRIMARY, COLOUR_SECONDARY);
     }
+    pausedLastTick = paused;
 }
 
 void Pomodoro::taskInputHandler()
 {
-    buttonUse.update();
-    buttonMode.update();
+    for (;;)
+    {
+        buttonUse.update();
+        buttonMode.update();
+    }
 }
 
 void Pomodoro::taskDisplayHandler()
 {
-    timerScreen();
+    for (;;)
+    {
+        updateColour();
+        timerScreen();
+        // Delay to reduce screen redraws
+        delay(200);
+    }
 }
 
 void Pomodoro::useClicked()
@@ -110,7 +121,7 @@ void Pomodoro::useClicked()
     {
     case TIMER:
         paused = !paused;
-        updateColour();
+        //updateColour();
         break;
     case GAME_OF_LIFE:
         break;

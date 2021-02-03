@@ -26,7 +26,8 @@ public:
     Pomodoro(TFT_eSPI &tft);
     ~Pomodoro() = default;
     void timerTick();
-    void loop();
+    void taskInputHandler();
+    void taskDisplayHandler();
 
 private:
     enum timerStatus
@@ -43,7 +44,8 @@ private:
 
     TFT_eSPI &tft;
 
-    boolean paused;
+    boolean paused = true;
+    boolean pausedLastTick = false;
     timerStatus currentStatus;
     screen currentScreen;
 
@@ -53,8 +55,6 @@ private:
 
     void resetTimer(timerStatus newStatus);
     void updateColour();
-    void taskInputHandler();
-    void taskDisplayHandler();
     void useClicked();
     void useLongClicked();
     void modeClicked();

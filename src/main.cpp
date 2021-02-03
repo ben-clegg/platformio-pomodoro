@@ -28,9 +28,16 @@ void setup()
     timerAlarmWrite(timer, 1000000, true);
     // Start an alarm
     timerAlarmEnable(timer);
+
+    // Tasks
+    xTaskCreatePinnedToCore((TaskFunction_t) * [] { pomo.taskDisplayHandler(); },
+                            "CPU0-DisplayUpdate", 2048, NULL, 10, NULL, 0);
+    xTaskCreatePinnedToCore((TaskFunction_t) * [] { pomo.taskInputHandler(); },
+                            "CPU1-InputUpdate", 2048, NULL, 10, NULL, 1);
 }
 
 void loop()
 {
-    pomo.loop();
+    // Delay required to avoid high cpu load
+    delay(1000);
 }
