@@ -4,168 +4,168 @@
 Button buttonUse(BUTTON_USE);
 Button buttonMode(BUTTON_MODE);
 
-Pomodoro::Pomodoro(TFT_eSPI &tft) : tft(tft) 
+Pomodoro::Pomodoro(TFT_eSPI &tft) : tft(tft)
 {
-  paused = false;
-  currentStatus = IN_POMODORO;
-  currentScreen = TIMER;
-  timeCounter = 0;
-  timeText = "--:--";
-  completedPomos = 0;
+    paused = false;
+    currentStatus = IN_POMODORO;
+    currentScreen = TIMER;
+    timeCounter = 0;
+    timeText = "--:--";
+    completedPomos = 0;
 
-  // Display
-  tft.init();
-  tft.setRotation(1);
-  
-  // Buttons 
-  buttonUse.setEvent(Button::event::SHORT_PRESS, std::bind(&Pomodoro::useClicked, this));
-  buttonUse.setEvent(Button::event::LONG_PRESS, std::bind(&Pomodoro::useLongClicked, this));
-  buttonMode.setEvent(Button::event::SHORT_PRESS, std::bind(&Pomodoro::modeClicked, this));
+    // Display
+    tft.init();
+    tft.setRotation(1);
 
-  // Setup timer
-  resetTimer(IN_POMODORO);
-  updateColour();
+    // Buttons
+    buttonUse.setEvent(Button::event::SHORT_PRESS, std::bind(&Pomodoro::useClicked, this));
+    buttonUse.setEvent(Button::event::LONG_PRESS, std::bind(&Pomodoro::useLongClicked, this));
+    buttonMode.setEvent(Button::event::SHORT_PRESS, std::bind(&Pomodoro::modeClicked, this));
 
-  Serial.println("pomo created");
+    // Setup timer
+    resetTimer(IN_POMODORO);
+    updateColour();
+
+    Serial.println("pomo created");
 }
 
-void Pomodoro::timerTick() 
+void Pomodoro::timerTick()
 {
-  // Decrement timer
-  if(!paused)
-  {
-    timeCounter--;
-    timeText = timerToString(timeCounter);
-
-    // Switch timer status
-    if (timeCounter <= 0) 
+    // Decrement timer
+    if (!paused)
     {
-      switch(currentStatus) 
-      {
-        case IN_POMODORO:
-          resetTimer(BREAK);
-          completedPomos++;
-          break;
-        case BREAK: 
-          resetTimer(IN_POMODORO);
-          break;
-        default:
-          break;
-      }
+        timeCounter--;
+        timeText = timerToString(timeCounter);
+
+        // Switch timer status
+        if (timeCounter <= 0)
+        {
+            switch (currentStatus)
+            {
+            case IN_POMODORO:
+                resetTimer(BREAK);
+                completedPomos++;
+                break;
+            case BREAK:
+                resetTimer(IN_POMODORO);
+                break;
+            default:
+                break;
+            }
+        }
     }
-  }
 }
 
-void Pomodoro::loop() 
+void Pomodoro::loop()
 {
-  taskDisplayHandler();
-  taskInputHandler();
+    taskDisplayHandler();
+    taskInputHandler();
 }
 
-void Pomodoro::resetTimer(timerStatus newStatus) 
+void Pomodoro::resetTimer(timerStatus newStatus)
 {
-  switch(newStatus) {
+    switch (newStatus)
+    {
     case IN_POMODORO:
-      timeCounter = WORK_TIME * SECONDS_PER_MIN;
-      break;
+        timeCounter = WORK_TIME * SECONDS_PER_MIN;
+        break;
     case BREAK:
-      timeCounter = BREAK_TIME * SECONDS_PER_MIN;
-      break;
-  }
-  timeText = timerToString(timeCounter);
-  currentStatus = newStatus;
-  paused = true;
-  updateColour();
+        timeCounter = BREAK_TIME * SECONDS_PER_MIN;
+        break;
+    }
+    timeText = timerToString(timeCounter);
+    currentStatus = newStatus;
+    paused = true;
+    updateColour();
 }
 
-void Pomodoro::updateColour() 
+void Pomodoro::updateColour()
 {
-  if(paused) 
-  {
-    tft.fillScreen(COLOUR_PRIMARY);
-    tft.setTextColor(COLOUR_SECONDARY, COLOUR_PRIMARY);
-  }
-  else 
-  {
-    tft.fillScreen(COLOUR_SECONDARY);
-    tft.setTextColor(COLOUR_PRIMARY, COLOUR_SECONDARY);
-  }
+    if (paused)
+    {
+        tft.fillScreen(COLOUR_PRIMARY);
+        tft.setTextColor(COLOUR_SECONDARY, COLOUR_PRIMARY);
+    }
+    else
+    {
+        tft.fillScreen(COLOUR_SECONDARY);
+        tft.setTextColor(COLOUR_PRIMARY, COLOUR_SECONDARY);
+    }
 }
 
-void Pomodoro::taskInputHandler() 
+void Pomodoro::taskInputHandler()
 {
-  buttonUse.update();
-  buttonMode.update();
+    buttonUse.update();
+    buttonMode.update();
 }
 
-void Pomodoro::taskDisplayHandler() 
+void Pomodoro::taskDisplayHandler()
 {
-  timerScreen();
+    timerScreen();
 }
 
-void Pomodoro::useClicked() 
+void Pomodoro::useClicked()
 {
-  switch(currentScreen) 
-  {
+    switch (currentScreen)
+    {
     case TIMER:
-      paused = !paused;
-      updateColour();
-      break;
+        paused = !paused;
+        updateColour();
+        break;
     case GAME_OF_LIFE:
-      break;
+        break;
     default:
-      break;
-  }
+        break;
+    }
 }
 
-void Pomodoro::useLongClicked() 
+void Pomodoro::useLongClicked()
 {
-  switch(currentScreen) 
-  {
+    switch (currentScreen)
+    {
     case TIMER:
-      resetTimer(IN_POMODORO);
-      break;
+        resetTimer(IN_POMODORO);
+        break;
     default:
-      break;
-  }
+        break;
+    }
 }
 
-void Pomodoro::modeClicked() 
+void Pomodoro::modeClicked()
 {
-  Serial.println("Mode clicked");
+    Serial.println("Mode clicked");
 }
 
-String Pomodoro::timerToString(uint16_t currentTimer) 
+String Pomodoro::timerToString(uint16_t currentTimer)
 {
-  // mm:ss
-  uint8_t secs = currentTimer % SECONDS_PER_MIN;
-  uint8_t mins = (currentTimer - secs) / SECONDS_PER_MIN;
+    // mm:ss
+    uint8_t secs = currentTimer % SECONDS_PER_MIN;
+    uint8_t mins = (currentTimer - secs) / SECONDS_PER_MIN;
 
-  String timeStr = intToPaddedString(mins);
-  timeStr.concat(":");
-  timeStr.concat(intToPaddedString(secs));
+    String timeStr = intToPaddedString(mins);
+    timeStr.concat(":");
+    timeStr.concat(intToPaddedString(secs));
 
-  return timeStr;
+    return timeStr;
 }
 
-String Pomodoro::intToPaddedString(uint8_t integer) 
+String Pomodoro::intToPaddedString(uint8_t integer)
 {
-  if (integer >= 10) 
-  {
-    return String(integer);
-  }
-  String str = "0";
-  str.concat(String(integer));
-  return str;
+    if (integer >= 10)
+    {
+        return String(integer);
+    }
+    String str = "0";
+    str.concat(String(integer));
+    return str;
 }
 
 void Pomodoro::timerScreen()
 {
-  tft.setTextSize(1);
-  tft.drawString(timeText, TEXT_CLOCK_X, TEXT_CLOCK_Y, FONT_CLOCK);
+    tft.setTextSize(1);
+    tft.drawString(timeText, TEXT_CLOCK_X, TEXT_CLOCK_Y, FONT_CLOCK);
 }
 
-void Pomodoro::gameOfLifeScreen() 
+void Pomodoro::gameOfLifeScreen()
 {
-  
 }
