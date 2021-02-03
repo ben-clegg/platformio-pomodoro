@@ -3,12 +3,11 @@
 
 #include <Arduino.h>
 #include <map>
+#include <functional>
 
 class Button 
 {
     public:
-    
-        typedef void (* vFunctionCall)(void);
         
         enum event
         {
@@ -19,11 +18,11 @@ class Button
         Button(uint8_t pinNum);
         ~Button() = default;
         void update();
-        void setEvent(event event, vFunctionCall response);
+        void setEvent(event event, std::function<void()> response);
 
     private:
         uint8_t pin;
-        std::map<event, vFunctionCall> events;
+        std::map<event, std::function<void()>> events;
 
         void callEvent(event event);
 };

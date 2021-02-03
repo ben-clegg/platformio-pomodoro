@@ -20,7 +20,7 @@ void Button::update()
     // TODO debounce
 }
 
-void Button::setEvent(event event, Button::vFunctionCall response)
+void Button::setEvent(event event, std::function<void()>  response)
 {
     events[event] = response;
 }
