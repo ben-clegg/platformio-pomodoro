@@ -22,9 +22,10 @@ Pomodoro::Pomodoro(TFT_eSPI &tft) : tft(tft)
   // Display
   tft.init();
   tft.setRotation(1);
-
+  
   // Buttons 
   buttonUse.setEvent(Button::event::SHORT_PRESS, std::bind(&Pomodoro::useClicked, this));
+  buttonUse.setEvent(Button::event::LONG_PRESS, std::bind(&Pomodoro::useLongClicked, this));
   buttonMode.setEvent(Button::event::SHORT_PRESS, std::bind(&Pomodoro::modeClicked, this));
 
   // Setup timer
@@ -36,25 +37,25 @@ Pomodoro::Pomodoro(TFT_eSPI &tft) : tft(tft)
   Serial.println(currentScreen);
 }
 
-void Pomodoro::timerTick() {
+void Pomodoro::timerTick() 
+{
   // Decrement timer
-  if((currentStatus != STOPPED) && (!paused)) {
+  if((currentStatus != STOPPED) && (!paused)) 
+  {
     timeCounter--;
     timeText = timerToString(timeCounter);
 
     // Switch timer status
-    if (timeCounter <= 0) {
-      switch(currentStatus) {
+    if (timeCounter <= 0) 
+    {
+      switch(currentStatus) 
+      {
         case POMO_RUNNING:
           resetTimer(BREAK);
-          //currentStatus = BREAK;
-          //timeCounter = BREAK_TIME * SECONDS_PER_MIN;
           completedPomos++;
           break;
         case BREAK: 
           resetTimer(POMO_RUNNING);
-          //currentStatus = POMO_RUNNING;
-          //timeCounter = WORK_TIME * SECONDS_PER_MIN;
           break;
         default:
           break;
@@ -70,7 +71,8 @@ void Pomodoro::loop()
   taskInputHandler();
 }
 
-void Pomodoro::resetTimer(timerStatus newStatus) {
+void Pomodoro::resetTimer(timerStatus newStatus) 
+{
   switch(newStatus) {
     case POMO_RUNNING:
       timeCounter = WORK_TIME * SECONDS_PER_MIN;
@@ -84,12 +86,15 @@ void Pomodoro::resetTimer(timerStatus newStatus) {
   paused = false;
 }
 
-void Pomodoro::updateColour() {
-  if(paused) {
+void Pomodoro::updateColour() 
+{
+  if(paused) 
+  {
     tft.fillScreen(COLOUR_PRIMARY);
     tft.setTextColor(COLOUR_SECONDARY, COLOUR_PRIMARY);
   }
-  else {
+  else 
+  {
     tft.fillScreen(COLOUR_SECONDARY);
     tft.setTextColor(COLOUR_PRIMARY, COLOUR_SECONDARY);
   }
@@ -101,19 +106,22 @@ void Pomodoro::taskInputHandler()
   buttonMode.update();
 }
 
-void Pomodoro::taskDisplayHandler() {
+void Pomodoro::taskDisplayHandler() 
+{
   timerScreen();
 }
 
-void Pomodoro::useClicked() {
-  switch(currentScreen) {
+void Pomodoro::useClicked() 
+{
+  switch(currentScreen) 
+  {
     case TIMER:
-      if(currentStatus == STOPPED) {
-        Serial.println("Resume");
+      if(currentStatus == STOPPED) 
+      {
         resetTimer(POMO_RUNNING);
       }
-      else {
-        Serial.println("Pause toggle");
+      else 
+      {
         paused = !paused;
         updateColour();
       }
@@ -125,24 +133,27 @@ void Pomodoro::useClicked() {
   }
 }
 
-void Pomodoro::useLongClicked() {
-    Serial.println("A longclicked");
-
+void Pomodoro::useLongClicked() 
+{
     switch(currentScreen) {
     case TIMER:
         resetTimer(POMO_RUNNING);
         currentStatus = STOPPED;
+        paused = true;
+        updateColour();
         break;
     default:
       break;
     }
 }
 
-void Pomodoro::modeClicked() {
+void Pomodoro::modeClicked() 
+{
     Serial.println("Mode clicked");
 }
 
-String Pomodoro::timerToString(uint16_t currentTimer) {
+String Pomodoro::timerToString(uint16_t currentTimer) 
+{
   // mm:ss
   uint8_t secs = currentTimer % SECONDS_PER_MIN;
   uint8_t mins = (currentTimer - secs) / SECONDS_PER_MIN;
@@ -154,8 +165,10 @@ String Pomodoro::timerToString(uint16_t currentTimer) {
   return timeStr;
 }
 
-String Pomodoro::intToPaddedString(uint8_t integer) {
-  if (integer >= 10) {
+String Pomodoro::intToPaddedString(uint8_t integer) 
+{
+  if (integer >= 10) 
+  {
     return String(integer);
   }
   String str = "0";
@@ -163,12 +176,13 @@ String Pomodoro::intToPaddedString(uint8_t integer) {
   return str;
 }
 
-void Pomodoro::timerScreen() {
+void Pomodoro::timerScreen()
+{
   tft.setTextSize(1);
-  //delay(WAIT); // each part of loop() must be separate thread before wait can be used again
   tft.drawString(timeText, TEXT_CLOCK_X, TEXT_CLOCK_Y, FONT_CLOCK);
 }
 
-void Pomodoro::gameOfLifeScreen() {
+void Pomodoro::gameOfLifeScreen() 
+{
   
 }
