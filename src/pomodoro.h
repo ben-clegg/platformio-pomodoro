@@ -33,9 +33,8 @@ class Pomodoro
     private: 
         enum timerStatus
         {
-            POMO_RUNNING,
-            BREAK,
-            STOPPED
+            IN_POMODORO,
+            BREAK
         };
 
         enum screen
