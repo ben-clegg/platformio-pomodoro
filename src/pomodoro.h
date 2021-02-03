@@ -1,9 +1,6 @@
 #pragma once
 
 
-#define BUTTON_USE  35
-#define BUTTON_MODE 0
-
 #define COLOUR_PRIMARY    TFT_GREEN
 #define COLOUR_SECONDARY  TFT_BLACK
 #define WAIT 200
@@ -19,6 +16,10 @@
 #include <Arduino.h>
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
 #include <SPI.h>
+
+
+static const uint8_t BUTTON_USE = 35;
+static const uint8_t BUTTON_MODE = 0;
 
 class Pomodoro 
 {
@@ -54,7 +55,6 @@ class Pomodoro
         String timeText;
         uint8_t completedPomos;
 
-        
         void resetTimer(timerStatus newStatus);
         void updateColour();
         void taskInputHandler();

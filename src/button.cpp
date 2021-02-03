@@ -1,14 +1,22 @@
 #include "button.h"
 
-Button::Button(uint8_t pin)
+Button::Button(uint8_t pinNum)
 {
-    pin = pin;
+    pin = pinNum;
     pinMode(pin, INPUT_PULLUP);
 }
 
 void Button::update()
 {
     // TODO handle logic for detecting button presses
+    if(digitalRead(pin) == LOW)
+    {
+        callEvent(event::SHORT_PRESS);
+    }
+    else 
+    {
+
+    }
     // TODO debounce
 }
 

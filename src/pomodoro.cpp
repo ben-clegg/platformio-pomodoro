@@ -1,4 +1,8 @@
 #include "pomodoro.h"
+#include "button.h"
+
+Button buttonUse(BUTTON_USE);
+Button buttonMode(BUTTON_MODE);
 
 Pomodoro::Pomodoro(TFT_eSPI &tft) : tft(tft) 
 {
@@ -6,8 +10,8 @@ Pomodoro::Pomodoro(TFT_eSPI &tft) : tft(tft)
   Serial.println("pomo created");
   
   paused = false;
-  currentStatus = STOPPED;
-  currentScreen = TIMER;
+  currentStatus = timerStatus::STOPPED;
+  currentScreen = screen::TIMER;
   timeCounter = 0;
   timeText = "--:--";
   completedPomos = 0;
@@ -20,35 +24,41 @@ Pomodoro::Pomodoro(TFT_eSPI &tft) : tft(tft)
   tft.setRotation(1);
 
   // Buttons 
+  buttonUse.setEvent(Button::event::SHORT_PRESS, (Button::vFunctionCall)&Pomodoro::useClicked);
   //buttonUse.setClickHandler((*Button2::CallbackFunction)(){&Pomodoro::useClicked});
   //buttonUse.setLongClickHandler(useLongClicked);
-  //buttonMode.setClickHandler(modeClicked);
+  buttonMode.setEvent(Button::event::SHORT_PRESS, (Button::vFunctionCall)&Pomodoro::modeClicked);
 
   // Setup timer
-  resetTimer(Pomodoro::timerStatus::POMO_RUNNING);
-  paused = false;
+  resetTimer(timerStatus::POMO_RUNNING);
+  paused = true;
   updateColour();
+
+  Serial.println(currentStatus);
+  Serial.println(currentScreen);
 }
 
 void Pomodoro::timerTick() {
   // Decrement timer
-  if((currentStatus != STOPPED) && (!paused)) {
+  if((currentStatus != timerStatus::STOPPED) && (!paused)) {
     timeCounter--;
     timeText = timerToString(timeCounter);
 
     // Switch timer status
     if (timeCounter <= 0) {
       switch(currentStatus) {
-        case POMO_RUNNING:
-          resetTimer(BREAK);
+        case timerStatus::POMO_RUNNING:
+          resetTimer(timerStatus::BREAK);
           //currentStatus = BREAK;
           //timeCounter = BREAK_TIME * SECONDS_PER_MIN;
           completedPomos++;
           break;
-        case BREAK: 
-          resetTimer(POMO_RUNNING);
+        case timerStatus::BREAK: 
+          resetTimer(timerStatus::POMO_RUNNING);
           //currentStatus = POMO_RUNNING;
           //timeCounter = WORK_TIME * SECONDS_PER_MIN;
+          break;
+        default:
           break;
       }
       paused = true;
@@ -59,14 +69,15 @@ void Pomodoro::timerTick() {
 void Pomodoro::loop() 
 {
   taskDisplayHandler();
+  taskInputHandler();
 }
 
 void Pomodoro::resetTimer(timerStatus newStatus) {
   switch(newStatus) {
-    case POMO_RUNNING:
+    case timerStatus::POMO_RUNNING:
       timeCounter = WORK_TIME * SECONDS_PER_MIN;
       break;
-    case BREAK:
+    case timerStatus::BREAK:
       timeCounter = BREAK_TIME * SECONDS_PER_MIN;
       break;
   }
@@ -86,8 +97,10 @@ void Pomodoro::updateColour() {
   }
 }
 
-void Pomodoro::taskInputHandler() {
-
+void Pomodoro::taskInputHandler() 
+{
+  buttonUse.update();
+  buttonMode.update();
 }
 
 void Pomodoro::taskDisplayHandler() {
@@ -95,19 +108,29 @@ void Pomodoro::taskDisplayHandler() {
 }
 
 void Pomodoro::useClicked() {
-    Serial.println("A clicked");
-    switch(currentScreen) {
-    case TIMER:
-        if(currentStatus == STOPPED) {
-            resetTimer(POMO_RUNNING);
-        }
-        else {
+  Serial.println("Use clicked");
+    Serial.print("currentScreen: ");
+    Serial.println(currentScreen);
+    Serial.println(this->currentScreen);
+    Serial.println(screen::TIMER);
+    Serial.println(screen::GAME_OF_LIFE);
+  switch(currentScreen) {
+    Serial.print("enter: ");
+    case screen::TIMER:
+      if(currentStatus == timerStatus::STOPPED) {
+        Serial.println("Resume");
+        resetTimer(POMO_RUNNING);
+      }
+      else {
+        Serial.println("Pause toggle");
         paused = !paused;
         updateColour();
-        }
-        break;
-    case GAME_OF_LIFE:
-        break;
+      }
+      break;
+    case screen::GAME_OF_LIFE:
+      break;
+    default:
+      break;
   }
 }
 
@@ -115,15 +138,17 @@ void Pomodoro::useLongClicked() {
     Serial.println("A longclicked");
 
     switch(currentScreen) {
-    case TIMER:
-        resetTimer(POMO_RUNNING);
+    case screen::TIMER:
+        resetTimer(timerStatus::POMO_RUNNING);
         currentStatus = STOPPED;
         break;
+    default:
+      break;
     }
 }
 
 void Pomodoro::modeClicked() {
-    Serial.println("B clicked");
+    Serial.println("Mode clicked");
 }
 
 String Pomodoro::timerToString(uint16_t currentTimer) {

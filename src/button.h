@@ -4,12 +4,11 @@
 #include <Arduino.h>
 #include <map>
 
-
 class Button 
 {
     public:
     
-        typedef void (* vFunctionCall)();
+        typedef void (* vFunctionCall)(void);
         
         enum event
         {
@@ -17,7 +16,7 @@ class Button
             LONG_PRESS
         };
 
-        Button(uint8_t pin);
+        Button(uint8_t pinNum);
         ~Button() = default;
         void update();
         void setEvent(event event, vFunctionCall response);
