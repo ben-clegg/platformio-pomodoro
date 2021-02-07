@@ -17,6 +17,7 @@ namespace mode
         virtual void draw();
         virtual void clickShort();
         virtual void clickLong();
+        virtual void switchedTo();
     };
 
 } // namespace mode

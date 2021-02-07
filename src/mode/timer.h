@@ -48,6 +48,7 @@ namespace mode
         void draw() override;
         void clickShort() override;
         void clickLong() override;
+        void switchedTo() override;
         void tick();
     };
 

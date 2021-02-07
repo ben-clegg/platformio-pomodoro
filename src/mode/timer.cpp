@@ -13,8 +13,6 @@ namespace mode
         // Setup timer
         resetTimer(IN_POMODORO);
         updateColour();
-
-        Serial.println("timer created");
     }
 
     void Timer::update()
@@ -24,8 +22,6 @@ namespace mode
     void Timer::draw()
     {
         updateColour();
-        Serial.println("b");
-        Serial.println(timeText);
         tft.setTextSize(1);
         tft.drawString(timeText, TEXT_CLOCK_X, TEXT_CLOCK_Y, FONT_CLOCK);
     }
@@ -101,6 +97,11 @@ namespace mode
         String str = "0";
         str.concat(String(integer));
         return str;
+    }
+
+    void Timer::switchedTo()
+    {
+        pausedLastTick = !paused;
     }
 
     void Timer::tick()
