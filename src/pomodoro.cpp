@@ -4,7 +4,7 @@
 Button buttonUse(BUTTON_USE);
 Button buttonMode(BUTTON_MODE);
 
-Pomodoro::Pomodoro(TFT_eSPI &tft) : tft(tft)
+Pomodoro::Pomodoro(TFT_eSPI &tft) : tft(tft), modeTimer(timeText)
 {
     paused = false;
     currentStatus = IN_POMODORO;
@@ -12,6 +12,10 @@ Pomodoro::Pomodoro(TFT_eSPI &tft) : tft(tft)
     timeCounter = 0;
     timeText = "--:--";
     completedPomos = 0;
+
+    // Modes
+    //modeTimer = mode::Timer(timeText);
+    //modeTimer(timeText);
 
     // Display
     tft.init();
@@ -109,6 +113,9 @@ void Pomodoro::taskDisplayHandler()
 {
     for (;;)
     {
+        modeTimer.update();
+        modeTimer.draw(tft);
+
         updateColour();
         timerScreen();
         // Delay to reduce screen redraws

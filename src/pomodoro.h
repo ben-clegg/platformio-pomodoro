@@ -15,6 +15,7 @@
 #include <Arduino.h>
 #include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
 #include <SPI.h>
+#include "mode/timer.h"
 
 static const uint8_t BUTTON_USE = 35;
 static const uint8_t BUTTON_MODE = 0;
@@ -53,6 +54,8 @@ private:
     uint16_t timeCounter;
     String timeText;
     uint8_t completedPomos;
+
+    mode::Timer modeTimer;
 
     void resetTimer(timerStatus newStatus);
     void updateColour();
