@@ -1,24 +1,27 @@
 #pragma once
 
+#include <vector>
 #include "mode.h"
-
-#define COLOUR_PRIMARY TFT_GREEN
-#define COLOUR_SECONDARY TFT_BLACK
 
 namespace mode
 {
     class GameOfLife : public Mode
     {
-    private:
-        /* data */
     public:
-        GameOfLife(TFT_eSPI &tft) : Mode(tft){};
+        GameOfLife(TFT_eSPI &tft);
         ~GameOfLife() = default;
         void update() override;
         void draw() override;
         void clickShort() override;
         void clickLong() override;
         void switchedTo() override;
+    private:
+        uint8_t neighbourCount(uint16_t x, uint16_t y);
+        bool isAliveAndValid(uint16_t x, uint16_t y);
+        static const uint8_t GRID_SCALE = 2;
+        static const uint16_t GRID_WIDTH = DISPLAY_WIDTH / GRID_SCALE;
+        static const uint16_t GRID_HEIGHT = DISPLAY_HEIGHT / GRID_SCALE;
+        bool cells[GRID_HEIGHT][GRID_WIDTH];
     };
     
 }

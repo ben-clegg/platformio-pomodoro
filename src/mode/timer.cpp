@@ -5,13 +5,14 @@ namespace mode
 
     Timer::Timer(TFT_eSPI &tft) : Mode(tft)
     {
-        paused = false;
+        paused = true;
         timeCounter = 0;
         completedPomos = 0;
         currentStatus = IN_POMODORO;
 
         // Setup timer
         resetTimer(IN_POMODORO);
+        pausedLastTick = !paused;
         updateColour();
     }
 
@@ -24,6 +25,8 @@ namespace mode
         updateColour();
         tft.setTextSize(1);
         tft.drawString(timeText, TEXT_CLOCK_X, TEXT_CLOCK_Y, FONT_CLOCK);
+        // Delay to reduce screen redraws
+        delay(180);
     }
 
     void Timer::resetTimer(timerStatus newStatus)

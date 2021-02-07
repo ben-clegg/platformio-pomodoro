@@ -39,56 +39,26 @@ void Pomodoro::taskDisplayHandler()
 {
     for (;;)
     {
-        //modeTimer.update();
-        //modeTimer.draw();
         modes.at(currentMode)->update();
         modes.at(currentMode)->draw();
-
-        // Delay to reduce screen redraws
-        delay(200);
+        // Needs some delay to prevent timing issues
+        delay(20);
     }
 }
 
 void Pomodoro::useClicked()
 {
     modes.at(currentMode)->clickShort();
-    /*
-    switch (currentScreen)
-    {
-    case TIMER:
-        modeTimer.clickShort();
-        break;
-    case GAME_OF_LIFE:
-        break;
-    default:
-        break;
-    }*/
 }
 
 void Pomodoro::useLongClicked()
 {
     modes.at(currentMode)->clickLong();
-    /*
-    switch (currentScreen)
-    {
-    case TIMER:
-        modeTimer.clickLong();
-        break;
-    default:
-        break;
-    }
-    */
 }
 
 void Pomodoro::modeClicked()
 {
-    /*
     // Switch to next screen
-    int nextScreenNumber = currentScreen + 1;
-    if (nextScreenNumber >= enumEnd)
-        nextScreenNumber = 0;
-    currentScreen = (screen)nextScreenNumber;
-    */
     currentMode++;
     if (currentMode > modes.size() - 1)
         currentMode = 0;
@@ -98,7 +68,6 @@ void Pomodoro::modeClicked()
 void Pomodoro::modeLongClicked()
 {
     // Switch screen back to timer
-    //currentScreen = TIMER;
     currentMode = 0;
 }
 

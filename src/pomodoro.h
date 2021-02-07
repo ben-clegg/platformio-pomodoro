@@ -23,16 +23,7 @@ public:
     void taskDisplayHandler();
 
 private:
-/*
-    enum screen
-    {
-        TIMER,
-        GAME_OF_LIFE,
-        enumEnd
-    };
-    */
-
-    std::vector<std::unique_ptr<mode::Mode>> modes; 
+    std::vector<std::unique_ptr<mode::Mode>> modes;
 
     TFT_eSPI &tft;
     uint8_t currentMode = 0;

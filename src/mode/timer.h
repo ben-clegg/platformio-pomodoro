@@ -3,9 +3,6 @@
 #include <Arduino.h>
 #include "mode.h"
 
-#define COLOUR_PRIMARY TFT_GREEN
-#define COLOUR_SECONDARY TFT_BLACK
-
 #define WORK_TIME 25
 #define BREAK_TIME 5
 #define SECONDS_PER_MIN 60

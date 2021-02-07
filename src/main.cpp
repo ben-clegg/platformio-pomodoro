@@ -30,7 +30,7 @@ void setup()
 
     // Tasks
     xTaskCreatePinnedToCore((TaskFunction_t) * [] { pomo.taskDisplayHandler(); },
-                            "CPU0-DisplayUpdate", 2048, NULL, 10, NULL, 0);
+                            "CPU0-DisplayUpdate", 102400, NULL, 10, NULL, 0);
     xTaskCreatePinnedToCore((TaskFunction_t) * [] { pomo.taskInputHandler(); },
                             "CPU1-InputUpdate", 2048, NULL, 10, NULL, 1);
 }
