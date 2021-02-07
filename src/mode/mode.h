@@ -7,12 +7,16 @@ namespace mode
     class Mode
     {
 
-    private:
+    protected:
+        TFT_eSPI &tft;
+
     public:
-        Mode() {};
+        Mode(TFT_eSPI &tft) : tft(tft){};
         ~Mode() = default;
         virtual void update();
-        virtual void draw(TFT_eSPI &tft);
+        virtual void draw();
+        virtual void clickShort();
+        virtual void clickLong();
     };
 
 } // namespace mode

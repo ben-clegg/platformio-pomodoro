@@ -16,7 +16,6 @@ void IRAM_ATTR onTimer()
 
 void setup()
 {
-    Serial.begin(9600);
     Serial.println("Main entered");
 
     // Init hardware timer
