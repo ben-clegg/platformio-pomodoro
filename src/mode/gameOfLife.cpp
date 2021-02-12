@@ -97,14 +97,14 @@ namespace mode
                 tft.fillRect(x * GRID_SCALE, y * GRID_SCALE, GRID_SCALE, GRID_SCALE, colour);
             }
         }
-        //delay(100);
+        vTaskDelay(20);
     }
 
     void GameOfLife::clickShort()
     {
         // Reset 
         switchedTo();
-        delay(100);
+        vTaskDelay(100);
     }
 
     void GameOfLife::clickLong()
@@ -113,9 +113,6 @@ namespace mode
 
     void GameOfLife::switchedTo()
     {
-        // Clear screen
-        tft.fillScreen(COLOUR_SECONDARY);
-
         // Populate cells
         for (uint16_t y = 0; y < GRID_HEIGHT; y++)
         {

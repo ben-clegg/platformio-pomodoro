@@ -13,7 +13,6 @@ namespace mode
         // Setup timer
         resetTimer(IN_POMODORO);
         pausedLastTick = !paused;
-        updateColour();
     }
 
     void Timer::update()
@@ -26,7 +25,7 @@ namespace mode
         tft.setTextSize(1);
         tft.drawString(timeText, TEXT_CLOCK_X, TEXT_CLOCK_Y, FONT_CLOCK);
         // Delay to reduce screen redraws
-        delay(180);
+        delay(200);
     }
 
     void Timer::resetTimer(timerStatus newStatus)
