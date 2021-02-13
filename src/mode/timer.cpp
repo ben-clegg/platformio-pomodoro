@@ -9,6 +9,7 @@ namespace mode
         timeCounter = 0;
         completedPomos = 0;
         currentStatus = IN_POMODORO;
+        setTargetFramerate(5);
 
         // Setup timer
         resetTimer(IN_POMODORO);

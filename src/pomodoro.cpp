@@ -41,6 +41,7 @@ void Pomodoro::taskDisplayHandler()
     {
         modes.at(currentMode)->update();
         modes.at(currentMode)->draw();
+        modes.at(currentMode)->frameDelay();
         // Needs some delay to prevent timing issues
         //delay(20);
     }

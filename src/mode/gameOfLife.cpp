@@ -4,6 +4,7 @@ namespace mode
 {
     GameOfLife::GameOfLife(TFT_eSPI &tft) : Mode(tft)
     {
+        setTargetFramerate(30);
 
         for (uint16_t y = 0; y < GRID_HEIGHT; y++)
         {
