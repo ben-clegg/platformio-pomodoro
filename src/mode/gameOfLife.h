@@ -18,6 +18,8 @@ namespace mode
     private:
         uint8_t neighbourCount(uint16_t x, uint16_t y);
         bool isAliveAndValid(uint16_t x, uint16_t y);
+        uint16_t generateColour();
+        void clearNonGridRegion();
         static const uint8_t GRID_SCALE = 2;
         static const uint16_t GRID_WIDTH = DISPLAY_WIDTH / GRID_SCALE;
         static const uint16_t GRID_HEIGHT = DISPLAY_HEIGHT / GRID_SCALE;
