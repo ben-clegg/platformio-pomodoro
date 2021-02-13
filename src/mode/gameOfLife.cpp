@@ -18,6 +18,14 @@ namespace mode
 
     void GameOfLife::update()
     {
+        // Handle iteration limit
+        if(iterations >= MAX_ITERATIONS) 
+        {
+            switchedTo();
+            return;
+        }
+        iterations++;
+
         bool nextCells[GRID_HEIGHT][GRID_WIDTH];
 
         // Determine changes
@@ -77,9 +85,23 @@ namespace mode
 
     bool GameOfLife::isAliveAndValid(uint16_t x, uint16_t y)
     {
-        // Only need to check >= because ints are unsigned (underflow if < 0)
-        if ((x >= GRID_WIDTH) || (y >= GRID_HEIGHT))
-            return false;
+        // Allow wrapping; note underflows if < 0
+        if(x >= GRID_WIDTH)
+        {
+            if (x > GRID_WIDTH)
+                x = GRID_WIDTH - 1; // Underflow, wraps to right
+            else 
+                x = 0; // Overflow, wraps to left
+        }
+
+        if(y >= GRID_HEIGHT)
+        {
+            if (y > GRID_HEIGHT)
+                y = GRID_HEIGHT - 1; // Underflow, wraps to bottom
+            else 
+                y = 0; // Overflow, wraps to top
+        }
+        
         return cells[y][x];
     }
 
@@ -97,7 +119,7 @@ namespace mode
                     tft.fillRect(x * GRID_SCALE, y * GRID_SCALE, GRID_SCALE, GRID_SCALE, background);
             }
         }
-        vTaskDelay(20);
+        vTaskDelay(15);
     }
 
     void GameOfLife::clickShort()
@@ -124,5 +146,6 @@ namespace mode
                     cells[y][x] = false;
             }
         }
+        iterations = 0;
     }
 } // namespace mode

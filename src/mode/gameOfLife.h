@@ -22,6 +22,8 @@ namespace mode
         static const uint16_t GRID_WIDTH = DISPLAY_WIDTH / GRID_SCALE;
         static const uint16_t GRID_HEIGHT = DISPLAY_HEIGHT / GRID_SCALE;
         bool cells[GRID_HEIGHT][GRID_WIDTH];
+        uint16_t iterations = 0;
+        static const uint16_t MAX_ITERATIONS = 600;
         struct StateChange
         {
             uint16_t x;
