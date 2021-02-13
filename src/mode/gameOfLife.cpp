@@ -20,6 +20,7 @@ namespace mode
     {
         bool nextCells[GRID_HEIGHT][GRID_WIDTH];
 
+        // Determine changes
         for (uint16_t y = 0; y < GRID_HEIGHT; y++)
         {
             for (uint16_t x = 0; x < GRID_WIDTH; x++)
@@ -62,17 +63,14 @@ namespace mode
     {
         uint8_t n = 0;
 
-        for (int8_t yOff = -1; yOff <= 1; yOff++)
-        {
-            for (int8_t xOff = -1; xOff <= 1; xOff++)
-            {
-                if ((yOff != 0) || (xOff != 0))
-                {
-                    if (isAliveAndValid(x + xOff, y + yOff))
-                        n++;
-                }
-            }
-        }
+        if (isAliveAndValid(x - 1, y - 1)) n++;
+        if (isAliveAndValid(x - 1, y)) n++;
+        if (isAliveAndValid(x - 1, y + 1)) n++;
+        if (isAliveAndValid(x, y - 1)) n++;
+        if (isAliveAndValid(x, y + 1)) n++;
+        if (isAliveAndValid(x + 1, y - 1)) n++;
+        if (isAliveAndValid(x + 1, y)) n++;
+        if (isAliveAndValid(x + 1, y + 1)) n++;
 
         return n;
     }
@@ -87,14 +85,16 @@ namespace mode
 
     void GameOfLife::draw()
     {
+        colour = TFT_GREENYELLOW;
+        
         for (uint16_t y = 0; y < GRID_HEIGHT; y++)
         {
             for (uint16_t x = 0; x < GRID_WIDTH; x++)
             {
-                uint16_t colour = COLOUR_SECONDARY;
                 if (cells[y][x])
-                    colour = COLOUR_PRIMARY;
-                tft.fillRect(x * GRID_SCALE, y * GRID_SCALE, GRID_SCALE, GRID_SCALE, colour);
+                    tft.fillRect(x * GRID_SCALE, y * GRID_SCALE, GRID_SCALE, GRID_SCALE, colour);
+                else
+                    tft.fillRect(x * GRID_SCALE, y * GRID_SCALE, GRID_SCALE, GRID_SCALE, background);
             }
         }
         vTaskDelay(20);

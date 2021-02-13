@@ -52,17 +52,27 @@ namespace mode
         {
             return;
         }
+        
+        switch (currentStatus)
+        {
+        case IN_POMODORO:
+            colour = TFT_GREEN;
+            break;
+        case BREAK:
+            colour = TFT_RED;
+            break;
+        }
 
         // State changed
         if (paused)
         {
-            tft.fillScreen(COLOUR_PRIMARY);
-            tft.setTextColor(COLOUR_SECONDARY, COLOUR_PRIMARY);
+            tft.fillScreen(colour);
+            tft.setTextColor(background, colour);
         }
         else
         {
-            tft.fillScreen(COLOUR_SECONDARY);
-            tft.setTextColor(COLOUR_PRIMARY, COLOUR_SECONDARY);
+            tft.fillScreen(background);
+            tft.setTextColor(colour, background);
         }
         pausedLastTick = paused;
     }
